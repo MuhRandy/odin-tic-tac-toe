@@ -66,63 +66,61 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
-  const checkWinner = () => {
+  const isPlayerWin = (playerMark, boardSize) => {
+    let activePlayerMarkNumber;
+
     const firstDiagonal = [];
     const secondDiagonal = [];
 
-    for (let i = 0; i < board.getBoardSize(); i++) {
-      // check diagonal
+    const isPlayerWinOnDiagonal = (i) => {
       firstDiagonal.push(board.getBoard()[i][i].getValue());
 
-      if (
-        firstDiagonal.filter((cell) => cell === getActivePlayer().mark)
-          .length === board.getBoardSize()
-      ) {
-        console.log(`${getActivePlayer().name} win`);
+      activePlayerMarkNumber = firstDiagonal.filter(
+        (cell) => cell === playerMark
+      ).length;
 
-        return true;
-      }
+      if (activePlayerMarkNumber === boardSize) return true;
 
-      secondDiagonal.push(
-        board.getBoard()[i][board.getBoardSize() - 1 - i].getValue()
-      );
+      const lastIndex = boardSize - 1;
+      secondDiagonal.push(board.getBoard()[i][lastIndex - i].getValue());
 
-      if (
-        secondDiagonal.filter((cell) => cell === getActivePlayer().mark)
-          .length === board.getBoardSize()
-      ) {
-        console.log(`${getActivePlayer().name} win`);
+      activePlayerMarkNumber = secondDiagonal.filter(
+        (cell) => cell === playerMark
+      ).length;
 
-        return true;
-      }
+      if (activePlayerMarkNumber === boardSize) return true;
+    };
 
-      // check each row
+    const isPlayerWinOnRow = (i) => {
       const row = board.getBoard()[i];
 
-      if (
-        row.filter((cell) => cell.getValue() === getActivePlayer().mark)
-          .length === board.getBoardSize()
-      ) {
-        console.log(`${getActivePlayer().name} win`);
+      activePlayerMarkNumber = row.filter(
+        (cell) => cell.getValue() === playerMark
+      ).length;
 
-        return true;
-      }
+      if (activePlayerMarkNumber === boardSize) return true;
+    };
 
-      // check each column
+    const isPlayerWinOnColumn = (i) => {
       const column = [];
 
-      for (let j = 0; j < board.getBoardSize(); j++) {
+      for (let j = 0; j < boardSize; j++) {
         column.push(board.getBoard()[j][i].getValue());
       }
 
-      if (
-        column.filter((cell) => cell === getActivePlayer().mark).length ===
-        board.getBoardSize()
-      ) {
-        console.log(`${getActivePlayer().name} win`);
+      activePlayerMarkNumber = column.filter(
+        (cell) => cell === playerMark
+      ).length;
 
-        return true;
-      }
+      if (activePlayerMarkNumber === boardSize) return true;
+    };
+
+    for (let i = 0; i < board.getBoardSize(); i++) {
+      if (isPlayerWinOnDiagonal(i)) return true;
+
+      if (isPlayerWinOnRow(i)) return true;
+
+      if (isPlayerWinOnColumn(i)) return true;
     }
 
     return false;
@@ -134,11 +132,12 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
     )
       return console.log("Cell Already Marked, please choose other cell!");
 
-    console.log(`${getActivePlayer().name} mark into cell ${row}-${column}...`);
+    console.log(`${getActivePlayer().name} mark into cell ${row}${column}...`);
 
     board.markCell(row, column, getActivePlayer().mark);
 
-    if (checkWinner()) return;
+    if (isPlayerWin(getActivePlayer().mark, board.getBoardSize()))
+      return console.log(`${getActivePlayer().name} win`);
 
     switchPlayerTurn();
     printNewRound();
@@ -150,9 +149,3 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
 }
 
 const game = gameController();
-
-game.playRound(0, 0);
-game.playRound(0, 1);
-game.playRound(1, 1);
-game.playRound(1, 0);
-game.playRound(2, 2);
