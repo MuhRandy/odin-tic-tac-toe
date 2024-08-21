@@ -44,12 +44,18 @@ function Cell() {
   return { getValue, addMark };
 }
 
-function gameController(playerOne = "Player One", playerTwo = "Player Two") {
+function GameController(playerOne = "Player One", playerTwo = "Player Two") {
   const board = Gameboard();
-  const players = [
-    { name: playerOne, mark: "x" },
-    { name: playerTwo, mark: "o" },
-  ];
+
+  const Player = (name, mark) => {
+    let score = 0;
+
+    const getScore = () => score;
+    const addScore = () => score++;
+    return { name, mark, getScore, addScore };
+  };
+
+  const players = [Player(playerOne, "x"), Player(playerTwo, "o")];
 
   let activePlayer = players[0];
 
@@ -150,8 +156,10 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
 
     if (isGameDraw()) return console.log("Game draw");
 
-    if (isPlayerWin(getActivePlayer().mark, board.getBoardSize()))
+    if (isPlayerWin(getActivePlayer().mark, board.getBoardSize())) {
+      getActivePlayer().addScore();
       return console.log(`${getActivePlayer().name} win`);
+    }
 
     switchPlayerTurn();
     printNewRound();
@@ -162,7 +170,7 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
   return { playRound, getActivePlayer };
 }
 
-const game = gameController();
+const game = GameController();
 
 // // draw scenario
 // game.playRound(0, 0);
