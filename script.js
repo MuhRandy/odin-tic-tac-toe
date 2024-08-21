@@ -126,6 +126,18 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
     return false;
   };
 
+  const isGameDraw = () => {
+    const draw = board
+      .getBoard()
+      .map((row) => row.filter((cell) => cell.getValue() !== "").length);
+
+    for (let i = 0; i < draw.length; i++) {
+      if (draw[i] < board.getBoardSize()) return false;
+    }
+
+    return true;
+  };
+
   const playRound = (row, column) => {
     if (
       board.markCell(row, column, getActivePlayer().mark) === "Already marked"
@@ -135,6 +147,8 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
     console.log(`${getActivePlayer().name} mark into cell ${row}${column}...`);
 
     board.markCell(row, column, getActivePlayer().mark);
+
+    if (isGameDraw()) return console.log("Game draw");
 
     if (isPlayerWin(getActivePlayer().mark, board.getBoardSize()))
       return console.log(`${getActivePlayer().name} win`);
@@ -149,3 +163,14 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two") {
 }
 
 const game = gameController();
+
+// // draw scenario
+// game.playRound(0, 0);
+// game.playRound(0, 1);
+// game.playRound(1, 1);
+// game.playRound(1, 0);
+// game.playRound(2, 1);
+// game.playRound(0, 2);
+// game.playRound(1, 2);
+// game.playRound(2, 0);
+// game.playRound(2, 2);
