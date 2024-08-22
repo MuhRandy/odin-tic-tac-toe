@@ -144,7 +144,7 @@
       if (
         board.markCell(row, column, getActivePlayer().mark) === "Already marked"
       )
-        return console.log("Cell Already Marked, please choose other cell!");
+        return "Already Marked";
 
       console.log(
         `${getActivePlayer().name} mark into cell ${row}${column}...`
@@ -178,6 +178,7 @@
     const playerTurnHeading = document.querySelector(".player-turn");
     const boardDiv = document.querySelector(".board");
     const dialog = document.querySelector("dialog");
+    let isCellAlreadyMarked = false;
 
     const updateScreen = () => {
       // get newest players score
@@ -228,27 +229,53 @@
       // Make sure I've clicked a column and not the gaps in between
       if (!selectedColumn || !selectedRow) return;
 
+      // Add element for dialog
+      dialog.textContent = "";
+      const div = document.createElement("div");
+      const h1 = document.createElement("h1");
+      const gameStatus = document.createElement("div");
+
+      if (game.playRound(selectedRow, selectedColumn) === "Already Marked") {
+        h1.textContent = "Cell already marked, please select other cell!";
+
+        h1.style.fontSize = "1rem";
+
+        div.appendChild(h1);
+
+        dialog.appendChild(div);
+
+        isCellAlreadyMarked = true;
+
+        dialog.show();
+      }
+
       game.playRound(selectedRow, selectedColumn);
 
       // check is the game over
       if (game.isPlayerWin() || game.isGameDraw()) {
-        const dialogHeading = document.querySelector(".game-status h1");
-        const dialogDiv = document.querySelector(".game-status div");
-
-        dialogHeading.textContent = game.isPlayerWin()
+        h1.textContent = game.isPlayerWin()
           ? `${game.getActivePlayer().name}`
           : "Game";
 
-        dialogDiv.textContent = game.isPlayerWin() ? "Win" : "Draw";
+        gameStatus.textContent = game.isPlayerWin() ? "Win" : "Draw";
+
+        div.appendChild(h1);
+        div.appendChild(gameStatus);
+
+        dialog.appendChild(div);
 
         dialog.show();
       }
+
       updateScreen();
     }
 
     function clickHandlerDialog() {
-      game.resetBoard();
-      updateScreen();
+      if (!isCellAlreadyMarked) {
+        game.resetBoard();
+        updateScreen();
+      }
+      isCellAlreadyMarked = false;
       dialog.close();
     }
     boardDiv.addEventListener("click", clickHandlerBoard);

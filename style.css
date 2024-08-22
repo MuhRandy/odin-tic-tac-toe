@@ -16,7 +16,7 @@ dialog[open] {
   place-items: center;
 }
 
-.game-status {
+dialog > div {
   background-color: #fff;
 
   width: 300px;
@@ -28,7 +28,7 @@ dialog[open] {
   flex-direction: column;
 }
 
-.game-status div {
+dialog h1 + div {
   font-size: 2rem;
   font-weight: bold;
 }
