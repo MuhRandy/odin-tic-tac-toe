@@ -1,0 +1,62 @@
+* {
+  margin: 0;
+}
+
+body {
+  text-align: center;
+}
+
+dialog[open] {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+
+  display: grid;
+  place-items: center;
+}
+
+.game-status {
+  background-color: #fff;
+
+  width: 300px;
+  height: 300px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.score {
+  width: 450px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+
+  min-height: 80vh;
+}
+
+.board {
+  --size: 300px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  height: var(--size);
+  width: var(--size);
+}
+
+.cell {
+  font-size: 80px;
+}
