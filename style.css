@@ -7,7 +7,7 @@ body {
 }
 
 dialog[open] {
-  position: absolute;
+  position: fixed;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
@@ -28,13 +28,22 @@ dialog[open] {
   flex-direction: column;
 }
 
+.game-status div {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
 .score {
-  width: 450px;
+  width: 350px;
   margin: 0 auto;
 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 10px;
+}
+
+.score div {
+  font-size: 2rem;
 }
 
 .container {
@@ -44,7 +53,7 @@ dialog[open] {
   justify-content: center;
   gap: 30px;
 
-  min-height: 80vh;
+  min-height: 70vh;
 }
 
 .board {
