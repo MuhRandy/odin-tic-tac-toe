@@ -20,7 +20,8 @@ dialog[open] {
   place-items: center;
 }
 
-dialog > div {
+dialog > div,
+form {
   background-color: #fff;
 
   width: 300px;
@@ -32,13 +33,39 @@ dialog > div {
   flex-direction: column;
 }
 
+form {
+  gap: 20px;
+}
+
 dialog h2 {
   font-size: 2rem;
+}
+
+form h2 {
+  font-size: 1.3rem;
 }
 
 dialog h2 + div {
   font-size: 2rem;
   font-weight: bold;
+}
+
+label {
+  display: none;
+}
+
+input {
+  border: none;
+  width: 80%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 1.5rem;
+}
+
+input:focus {
+  outline: none;
+  border-bottom: 1px solid black;
+  color: black;
 }
 
 .player-turn {
@@ -62,7 +89,7 @@ dialog h2 + div {
   justify-content: center;
   gap: 30px;
 
-  min-height: 70vh;
+  min-height: 80vh;
 }
 
 .board {
@@ -77,4 +104,13 @@ dialog h2 + div {
 
 .cell {
   font-size: 80px;
+}
+
+.cell:hover {
+  color: #e43131;
+}
+
+.cell:hover::after {
+  content: attr(data-mark);
+  color: rgba(0, 0, 0, 0.4);
 }

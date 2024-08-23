@@ -64,6 +64,8 @@
         : (activePlayer = players[0]);
     };
 
+    const resetActivePlayer = () => (activePlayer = players[0]);
+
     const getActivePlayer = () => activePlayer;
 
     const isPlayerWin = () => {
@@ -165,6 +167,7 @@
     return {
       playRound,
       getActivePlayer,
+      resetActivePlayer,
       getPlayers,
       getBoard: board.getBoard,
       resetBoard: board.resetBoard,
@@ -174,12 +177,21 @@
   }
 
   function ScreenController() {
-    const game = GameController();
+    let game;
     const boardDiv = document.querySelector(".board");
     const dialog = document.querySelector("dialog");
-    let isCellAlreadyMarked = false;
+    const restartButton = document.querySelector(".buttons .restart-game");
+    const newGameButton = document.querySelector(".buttons .new-game");
+
+    let isNewGame = true;
 
     const updateScreen = () => {
+      if (isNewGame) {
+        isNewGame = false;
+        clickHandlerNewGame();
+        return;
+      }
+
       // get players data
       const players = game.getPlayers();
       const playerOne = document.querySelector(".player-one");
@@ -221,6 +233,9 @@
           // This makes it easier to pass into our `playRound` function
           cellButton.dataset.row = rowIndex;
           cellButton.dataset.column = columnIndex;
+          if (cell.getValue() === "")
+            cellButton.dataset.mark = activePlayer.mark;
+
           cellButton.textContent = cell.getValue();
           boardDiv.appendChild(cellButton);
         });
@@ -241,6 +256,8 @@
       const gameStatus = document.createElement("div");
 
       if (game.playRound(selectedRow, selectedColumn) === "Already Marked") {
+        dialog.dataset.for = "warning";
+
         h2.textContent = "Cell already marked, please select other cell!";
 
         h2.style.fontSize = "1rem";
@@ -249,8 +266,6 @@
 
         dialog.appendChild(div);
 
-        isCellAlreadyMarked = true;
-
         dialog.show();
       }
 
@@ -258,6 +273,8 @@
 
       // check is the game over
       if (game.isPlayerWin() || game.isGameDraw()) {
+        dialog.dataset.for = "game-status";
+
         h2.textContent = game.isPlayerWin()
           ? `${game.getActivePlayer().name}`
           : "Game";
@@ -276,17 +293,90 @@
     }
 
     function clickHandlerDialog() {
-      if (!isCellAlreadyMarked) {
+      if (dialog.dataset.for === "game-status") {
         game.resetBoard();
+        game.resetActivePlayer();
         updateScreen();
       }
-      isCellAlreadyMarked = false;
+
+      if (dialog.dataset.for === "new-game") return;
+
       dialog.close();
     }
+
+    function clickHandlerRestart() {
+      game.resetBoard();
+      game.resetActivePlayer();
+      updateScreen();
+    }
+
+    function clickHandlerNewGame() {
+      dialog.textContent = "";
+      dialog.dataset.for = "new-game";
+      const form = document.createElement("form");
+      const h2 = document.createElement("h2");
+      const button = document.createElement("button");
+
+      form.method = "dialog";
+
+      h2.textContent = "Choose Player Name";
+
+      button.textContent = "Start Game";
+
+      const createLabelInput = (labelText, inputDefaultValue, id) => {
+        const div = document.createElement("div");
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+
+        label.textContent = labelText;
+        label.setAttribute("for", id);
+
+        input.value = inputDefaultValue;
+        input.id = id;
+
+        div.appendChild(label);
+        div.appendChild(input);
+
+        return div;
+      };
+
+      const playerOneInput = createLabelInput(
+        "Player One Name",
+        "Player one",
+        "player-one-name"
+      );
+      const playerTwoInput = createLabelInput(
+        "Player Two Name",
+        "Player two",
+        "player-two-name"
+      );
+
+      button.addEventListener("click", () => {
+        const playerOneNameInput = document.querySelector("#player-one-name");
+        const playerTwoNameInput = document.querySelector("#player-two-name");
+        const playerOneName = playerOneNameInput.value;
+        const playerTwoName = playerTwoNameInput.value;
+
+        game = GameController(playerOneName, playerTwoName);
+
+        updateScreen();
+      });
+
+      form.appendChild(h2);
+      form.appendChild(playerOneInput);
+      form.appendChild(playerTwoInput);
+      form.appendChild(button);
+
+      dialog.appendChild(form);
+
+      dialog.show();
+    }
+
     boardDiv.addEventListener("click", clickHandlerBoard);
     dialog.addEventListener("click", clickHandlerDialog);
+    restartButton.addEventListener("click", clickHandlerRestart);
+    newGameButton.addEventListener("click", clickHandlerNewGame);
 
-    // Initial render
     updateScreen();
   }
 
