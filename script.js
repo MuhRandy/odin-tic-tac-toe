@@ -41,7 +41,7 @@
     return { getValue, addMark };
   }
 
-  function GameController(playerOne = "Player X", playerTwo = "Player O") {
+  function GameController(playerOne = "Player one", playerTwo = "Player two") {
     const board = Gameboard();
 
     const Player = (name, mark) => {
@@ -175,26 +175,25 @@
 
   function ScreenController() {
     const game = GameController();
-    const playerTurnHeading = document.querySelector(".player-turn");
     const boardDiv = document.querySelector(".board");
     const dialog = document.querySelector("dialog");
     let isCellAlreadyMarked = false;
 
     const updateScreen = () => {
-      // get newest players score
+      // get players data
       const players = game.getPlayers();
-      const playerOneName = document.querySelector(".player-one-name");
-      const playerTwoName = document.querySelector(".player-two-name");
-      const playerOneMark = document.querySelector(".player-one-mark");
-      const playerTwoMark = document.querySelector(".player-two-mark");
+      const playerOne = document.querySelector(".player-one");
+      const playerTwo = document.querySelector(".player-two");
+      const playerOneName = document.querySelector(".player-one .name");
+      const playerTwoName = document.querySelector(".player-two .name");
+      const playerOneScore = document.querySelector(".player-one .score");
+      const playerTwoScore = document.querySelector(".player-two .score");
 
       playerOneName.textContent = players[0].name;
-
-      playerOneMark.textContent = players[0].getScore();
+      playerOneScore.textContent = players[0].getScore();
 
       playerTwoName.textContent = players[1].name;
-
-      playerTwoMark.textContent = players[1].getScore();
+      playerTwoScore.textContent = players[1].getScore();
 
       // clear the board
       boardDiv.textContent = "";
@@ -204,7 +203,13 @@
       const activePlayer = game.getActivePlayer();
 
       // Display player's turn
-      playerTurnHeading.textContent = `${activePlayer.name}'s turn...`;
+      if (activePlayer.mark === "X") {
+        playerTwo.classList.remove("active-player");
+        playerOne.classList.add("active-player");
+      } else {
+        playerOne.classList.remove("active-player");
+        playerTwo.classList.add("active-player");
+      }
 
       // Render board squares
       board.forEach((row, rowIndex) => {
@@ -232,15 +237,15 @@
       // Add element for dialog
       dialog.textContent = "";
       const div = document.createElement("div");
-      const h1 = document.createElement("h1");
+      const h2 = document.createElement("h2");
       const gameStatus = document.createElement("div");
 
       if (game.playRound(selectedRow, selectedColumn) === "Already Marked") {
-        h1.textContent = "Cell already marked, please select other cell!";
+        h2.textContent = "Cell already marked, please select other cell!";
 
-        h1.style.fontSize = "1rem";
+        h2.style.fontSize = "1rem";
 
-        div.appendChild(h1);
+        div.appendChild(h2);
 
         dialog.appendChild(div);
 
@@ -253,13 +258,13 @@
 
       // check is the game over
       if (game.isPlayerWin() || game.isGameDraw()) {
-        h1.textContent = game.isPlayerWin()
+        h2.textContent = game.isPlayerWin()
           ? `${game.getActivePlayer().name}`
           : "Game";
 
         gameStatus.textContent = game.isPlayerWin() ? "Win" : "Draw";
 
-        div.appendChild(h1);
+        div.appendChild(h2);
         div.appendChild(gameStatus);
 
         dialog.appendChild(div);

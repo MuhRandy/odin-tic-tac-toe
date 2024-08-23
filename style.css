@@ -10,6 +10,10 @@ dialog[open] {
   position: fixed;
   width: 100vw;
   height: 100vh;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
   background-color: rgba(0, 0, 0, 0.8);
 
   display: grid;
@@ -28,22 +32,27 @@ dialog > div {
   flex-direction: column;
 }
 
-dialog h1 + div {
+dialog h2 {
+  font-size: 2rem;
+}
+
+dialog h2 + div {
   font-size: 2rem;
   font-weight: bold;
 }
 
-.score {
+.player-turn {
   width: 350px;
   margin: 0 auto;
+  color: rgba(0, 0, 0, 0.4);
 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 10px;
 }
 
-.score div {
-  font-size: 2rem;
+.active-player {
+  color: black;
 }
 
 .container {
